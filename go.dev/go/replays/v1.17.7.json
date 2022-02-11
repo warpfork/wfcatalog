@@ -1,0 +1,36 @@
+{
+	"inputs": {
+		"rootfs": "ware:tar:7hXZ2YZnFyzC3TqgncPBh2ymj2uRk55C6bWZfvNTEdvyz1UCKZ5w2dw58GuLJzppWo",
+		"go": "catalog:go.dev/go:v1.17.7:linux-amd64"
+	},
+	"steps": {
+		"build": {
+			"protoformula": {
+				"inputs": {
+					"/": "pipe::rootfs",
+					"/go": "pipe::go",
+					"/src": "catalog:go.dev/go:v1.17.7:src"
+				},
+				"action": {
+					"script": {
+						"interpreter": "/bin/sh",
+						"contents": [
+							"export PATH=$PATH:/go/go/bin",
+							"cd /src/go/src",
+							"GOROOT_FINAL=/go CGO_ENABLED=0 ./make.bash"
+						]
+					}
+				},
+				"outputs": {
+					"linux-amd64-static": {
+						"from": "/src/go",
+						"packtype": "tar"
+					}
+				}
+			}
+		}
+	},
+	"outputs": {
+		"linux-amd64-static": "pipe:build:linux-amd64-static"
+	}
+}
